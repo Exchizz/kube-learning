@@ -13,3 +13,10 @@ The tool currently supports the following probes:
 
 (Startup probe is not supported at the moment)
 
+
+
+Ideas:
+ - Show when sigterm/sigkill is received
+ - Command for disabling debugging (it's noisy)
+ - Command for printing the status of all probes
+ - Show current pod name and node name in "prompt" (for debugging when running multiple instances of kube-learning)

@@ -30,18 +30,27 @@ func getLine() (string, error) {
 }
 
 func cmd_health(c cmd) {
-	fmt.Printf("cmd_health called")
+	fmt.Printf("cmd_health called with value: %t\n", c.cmd_value)
+	probes.health = c.cmd_value
 }
 
 func cmd_liveness(c cmd) {
-	fmt.Printf("cmd_liveness called")
+	fmt.Printf("cmd_liveness called with value: %t\n", c.cmd_value)
+	probes.liveness = c.cmd_value
 }
 
 func cmd_readyness(c cmd) {
-	fmt.Printf("cmd_readyness called")
+	fmt.Printf("cmd_readyness called with value: %t\n", c.cmd_value)
+	probes.readyness = c.cmd_value
 }
 
 type Callback func(cmd)
+
+type Probes struct {
+	health    bool
+	liveness  bool
+	readyness bool
+}
 
 var commands = map[string]Callback{
 	"health":    cmd_health,
@@ -63,7 +72,7 @@ func createCmd(line string) (cmd, error) {
 		return cmd{}, fmt.Errorf("received %d parameters, expected 2", len)
 	}
 	retval.cmd_name = strings.ToLower(strings.Trim(line_splitted[0], " "))
-	retval.cmd_value, _ = strconv.ParseBool(line_splitted[1])
+	retval.cmd_value, _ = strconv.ParseBool(strings.Trim(line_splitted[1], " "))
 
 	return retval, nil
 }
@@ -100,14 +109,42 @@ func stdin() {
 
 }
 
+var probes = Probes{}
+
 func main() {
+
+	// initialize probes
+	probes.health = true
+	probes.liveness = false
+	probes.readyness = false
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
 
-	http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hi")
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		if probes.health {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, "OK")
+		} else {
+			w.WriteHeader(http.StatusBadGateway)
+		}
+	})
+	http.HandleFunc("/livez", func(w http.ResponseWriter, r *http.Request) {
+		if probes.liveness {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, "OK")
+		} else {
+			w.WriteHeader(http.StatusBadGateway)
+		}
+	})
+	http.HandleFunc("/readynessz", func(w http.ResponseWriter, r *http.Request) {
+		if probes.readyness {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, "OK")
+		} else {
+			w.WriteHeader(http.StatusBadGateway)
+		}
 	})
 
 	go stdin()

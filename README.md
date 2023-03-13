@@ -40,12 +40,14 @@ cmd_health called with value: false
 health: true <- input from keyboard
 ```
 
-# commands:
+# commands
+```
 ? <enter> - shows the status of all probes and where the pod is running
 verbose: true | false <enter> - enables/disable verbose logging (default is off)
 health: true | false <enter> - sets state of health probe
 liveness: true | false <enter> - sets state of liveness probe
 readyness: true | false <enter> - sets state of readyness probe
+```
 
 Ideas:
  - Show when sigterm/sigkill is received

@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func logRequest(handler http.Handler) http.Handler {
@@ -112,7 +112,18 @@ func stdin() {
 
 var probes = Probes{}
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func main() {
+
+	// initialize variables
+	pod_name := getEnv("POD_NAME", "default_pod_name")
+	node_name := getEnv("NODE_NAME", "local")
 
 	// initialize probes
 	probes.health = true
@@ -120,7 +131,8 @@ func main() {
 	probes.readyness = false
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+		now := time.Now().Format("01-02-2006 15:04:05")
+		fmt.Fprintf(w, "%s|%s|%s|says hello", now, node_name, pod_name)
 	})
 
 	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
@@ -149,6 +161,7 @@ func main() {
 	})
 
 	go stdin()
-	log.Fatal(http.ListenAndServe(":8081", logRequest(http.DefaultServeMux)))
+	log.Printf("Server is listening on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", logRequest(http.DefaultServeMux)))
 
 }

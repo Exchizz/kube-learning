@@ -16,14 +16,14 @@ The tool currently supports the following probes:
 ---
 
 Run and test locally:
-docker run -p 8081:8081 --rm -i -t ghcr.io/exchizz/kube-learning:master
+docker run -p 8080:8080 --rm -i -t ghcr.io/exchizz/kube-learning:master
 
 
 Output from example run:
 
 ```
 -------------------------------
-Command syntax: <cmd>:<value>
+Command syntax: <cmd>:<value> <enter>
 Health: false
 Readyness: false
 liveness: true
@@ -40,7 +40,7 @@ cmd_health called with value: false
 health: true <- input from keyboard
 ```
 
-# commands
+# Commands
 ```
 ? <enter> - shows the status of all probes and where the pod is running
 verbose: true | false <enter> - enables/disable verbose logging (default is off)
@@ -51,6 +51,6 @@ readyness: true | false <enter> - sets state of readyness probe
 
 Ideas:
  - Show when sigterm/sigkill is received
- - [ x ] Command for disabling debugging (it's noisy)
- - [ x ] Command for printing the status of all probes
- - [ x ] Show current pod name and node name in "prompt" (for debugging when running multiple instances of kube-learning)
+ - [x] Command for disabling debugging (it's noisy)
+ - [x] Command for printing the status of all probes
+ - [x] Show current pod name and node name in "prompt" (for debugging when running multiple instances of kube-learning)

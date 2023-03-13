@@ -22,22 +22,37 @@ docker run -p 8080:8080 --rm -i -t ghcr.io/exchizz/kube-learning:master
 Output from example run:
 
 ```
--------------------------------
-Command syntax: <cmd>:<value> <enter>
-Health: false
-Readyness: false
-liveness: true
--------------------------------
-2023/03/10 13:06:50 172.17.0.1:58754 GET /
-2023/03/10 13:06:50 172.17.0.1:58754 GET /favicon.ico
-2023/03/10 13:06:53 172.17.0.1:58756 GET /healthz
-2023/03/10 13:06:53 172.17.0.1:58756 GET /favicon.ico
-health:false <- input from keyboard
-cmd_health called with value: false
-2023/03/10 13:07:00 172.17.0.1:58758 GET /healthz
-2023/03/10 13:07:02 172.17.0.1:58758 GET /healthz
-2023/03/10 13:07:03 172.17.0.1:58758 GET /healthz
-health: true <- input from keyboard
+time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------
+time="2023-03-13T16:05:12+01:00" level=info msg="Command syntax: <cmd>:<value>"   
+time="2023-03-13T16:05:12+01:00" level=info msg="Server is listening on port 8080"
+time="2023-03-13T16:05:12+01:00" level=info msg="Examples: "
+time="2023-03-13T16:05:12+01:00" level=info msg="  Health: false"
+time="2023-03-13T16:05:12+01:00" level=info msg="  Readyness: false"
+time="2023-03-13T16:05:12+01:00" level=info msg="  liveness: true"
+time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------   
+verbose: true
+time="2023-03-13T16:05:17+01:00" level=info msg="Enabling debug log"
+time="2023-03-13T16:05:18+01:00" level=debug msg="127.0.0.1:65512 GET /" node_name=local pod_name=default_pod_name
+time="2023-03-13T16:05:19+01:00" level=debug msg="127.0.0.1:65512 GET /" node_name=local pod_name=default_pod_name
+time="2023-03-13T16:05:19+01:00" level=debug msg="127.0.0.1:65512 GET /" node_name=local pod_name=default_pod_name
+verbose: false
+time="2023-03-13T16:05:32+01:00" level=info msg="Disabling debug log"
+?
+Status:
+  Health: true
+  Liveness: false
+  Readyness: false
+  Node name: local
+  Pod name: default_pod_name
+health: false
+?
+Status:
+  Health: false
+  Liveness: false
+  Readyness: false
+  Node name: local
+  Pod name: default_pod_name
+
 ```
 
 # Commands

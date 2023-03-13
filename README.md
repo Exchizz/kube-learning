@@ -54,6 +54,13 @@ Status:
   Pod name: default_pod_name
 
 ```
+# Example output from /
+```
+curl http://localhost:8080/
+03-13-2023 16:32:49|local|default_pod_name|says hello
+```
+*local* is the default value of the the env-var NODE_NAME
+*default_pod_name* is the default value of the env-var POD_NAME
 
 # Commands
 ```

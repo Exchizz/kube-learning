@@ -4,17 +4,18 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
+		log.Debugf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
 	})
 }
@@ -24,24 +25,34 @@ func getLine() (string, error) {
 	s.Scan() // use `for scanner.Scan()` to keep reading
 	line := strings.TrimSpace(s.Text())
 	if len(line) == 0 {
-		return "", errors.New("Empty line")
+		return "", errors.New("empty line")
 	}
 	return line, nil
 }
 
 func cmd_health(c cmd) {
-	fmt.Printf("cmd_health called with value: %t\n", c.cmd_value)
+	prompt.Printf("cmd_health called with value: %t", c.cmd_value)
 	probes.health = c.cmd_value
 }
 
 func cmd_liveness(c cmd) {
-	fmt.Printf("cmd_liveness called with value: %t\n", c.cmd_value)
+	prompt.Printf("cmd_liveness called with value: %t", c.cmd_value)
 	probes.liveness = c.cmd_value
 }
 
 func cmd_readyness(c cmd) {
-	fmt.Printf("cmd_readyness called with value: %t\n", c.cmd_value)
+	prompt.Printf("cmd_readyness called with value: %t", c.cmd_value)
 	probes.readyness = c.cmd_value
+}
+
+func cmd_verbose(c cmd) {
+	if c.cmd_value {
+		log.Info("Enabling debug log")
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.Info("Disabling debug log")
+		log.SetLevel(log.WarnLevel)
+	}
 }
 
 type Callback func(cmd)
@@ -56,6 +67,7 @@ var commands = map[string]Callback{
 	"health":    cmd_health,
 	"liveness":  cmd_liveness,
 	"readyness": cmd_readyness,
+	"verbose":   cmd_verbose,
 }
 
 type cmd struct {
@@ -77,14 +89,23 @@ func createCmd(line string) (cmd, error) {
 	return retval, nil
 }
 
+func show_status() {
+	fmt.Printf("Status: \n")
+	fmt.Printf("  Health: %t\n", probes.health)
+	fmt.Printf("  Liveness: %t\n", probes.liveness)
+	fmt.Printf("  Readyness: %t\n", probes.readyness)
+	fmt.Printf("  Node name: %s\n", node_name)
+	fmt.Printf("  Pod name: %s\n", pod_name)
+
+}
 func stdin() {
-	fmt.Println("-------------------------------")
-	fmt.Println("Command syntax: <cmd>:<value>")
-	fmt.Println("Examples: ")
-	fmt.Println("  Health: false")
-	fmt.Println("  Readyness: false")
-	fmt.Println("  liveness: true")
-	fmt.Println("-------------------------------")
+	log.Printf("-------------------------------")
+	log.Printf("Command syntax: <cmd>:<value>")
+	log.Printf("Examples: ")
+	log.Printf("  Health: false")
+	log.Printf("  Readyness: false")
+	log.Printf("  liveness: true")
+	log.Printf("-------------------------------")
 
 	for {
 		// Get line from stdin
@@ -93,19 +114,22 @@ func stdin() {
 			continue
 		}
 
+		if line == "?" {
+			show_status()
+			continue
+		}
 		// Parse the line and convert to instance of "cmd"
 		cmd, err := createCmd(line)
 		if err != nil {
-			fmt.Println(err)
+			log.Warn(err)
 		}
 
 		// if cmd.cmd_name exists, run the associated funk
 		if funk, ok := commands[cmd.cmd_name]; ok {
 			funk(cmd)
 		} else {
-			fmt.Printf("Command '%s' does not exist\n", cmd.cmd_name)
+			log.Warn("Command '%s' does not exist", cmd.cmd_name)
 		}
-
 	}
 
 }
@@ -119,11 +143,19 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+var prompt *log.Entry
+var pod_name string
+var node_name string
+
 func main() {
 
 	// initialize variables
-	pod_name := getEnv("POD_NAME", "default_pod_name")
-	node_name := getEnv("NODE_NAME", "local")
+	pod_name = getEnv("POD_NAME", "default_pod_name")
+	node_name = getEnv("NODE_NAME", "local")
+	prompt = log.WithFields(log.Fields{
+		"node_name": node_name,
+		"pod_name":  pod_name,
+	})
 
 	// initialize probes
 	probes.health = true
@@ -161,7 +193,7 @@ func main() {
 	})
 
 	go stdin()
-	log.Printf("Server is listening on port 8080")
+	log.Info("Server is listening on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", logRequest(http.DefaultServeMux)))
 
 }

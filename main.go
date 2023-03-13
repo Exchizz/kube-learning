@@ -80,9 +80,10 @@ func createCmd(line string) (cmd, error) {
 func stdin() {
 	fmt.Println("-------------------------------")
 	fmt.Println("Command syntax: <cmd>:<value>")
-	fmt.Println("Health: false")
-	fmt.Println("Readyness: false")
-	fmt.Println("liveness: true")
+	fmt.Println("Examples: ")
+	fmt.Println("  Health: false")
+	fmt.Println("  Readyness: false")
+	fmt.Println("  liveness: true")
 	fmt.Println("-------------------------------")
 
 	for {

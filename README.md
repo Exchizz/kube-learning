@@ -30,22 +30,22 @@ time="2023-03-13T16:05:12+01:00" level=info msg="  Health: false"
 time="2023-03-13T16:05:12+01:00" level=info msg="  Readyness: false"
 time="2023-03-13T16:05:12+01:00" level=info msg="  liveness: true"
 time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------   
-verbose: true
+verbose: true  <- input
 time="2023-03-13T16:05:17+01:00" level=info msg="Enabling debug log"
 time="2023-03-13T16:05:18+01:00" level=debug msg="127.0.0.1:65512 GET /" node_name=local pod_name=default_pod_name
 time="2023-03-13T16:05:19+01:00" level=debug msg="127.0.0.1:65512 GET /" node_name=local pod_name=default_pod_name
 time="2023-03-13T16:05:19+01:00" level=debug msg="127.0.0.1:65512 GET /" node_name=local pod_name=default_pod_name
-verbose: false
+verbose: false  <- input
 time="2023-03-13T16:05:32+01:00" level=info msg="Disabling debug log"
-?
+?  <- input
 Status:
   Health: true
   Liveness: false
   Readyness: false
   Node name: local
   Pod name: default_pod_name
-health: false
-?
+health: false  <- input
+?  <- input
 Status:
   Health: false
   Liveness: false

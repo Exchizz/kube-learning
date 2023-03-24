@@ -7,7 +7,6 @@ https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-read
 This program (kube-learning) allows you to change the status of the probes via stdin by entering commands. Fx. "health: false" - this will cause the health check to fail. Kubernetes will then try to reschedule the pod where "kube-learning" is running.
 
 The tool currently supports the following probes:
- - Health probe
  - Liveness probe 
  - Readyness probe
 

@@ -7,7 +7,6 @@ https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-read
 This program (kube-learning) allows you to change the status of the probes via stdin by entering commands. Fx. "health: false" - this will cause the health check to fail. Kubernetes will then try to reschedule the pod where "kube-learning" is running.
 
 The tool currently supports the following probes:
- - Health probe
  - Liveness probe 
  - Readyness probe
 
@@ -26,7 +25,6 @@ time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------
 time="2023-03-13T16:05:12+01:00" level=info msg="Command syntax: <cmd>:<value>"   
 time="2023-03-13T16:05:12+01:00" level=info msg="Server is listening on port 8080"
 time="2023-03-13T16:05:12+01:00" level=info msg="Examples: "
-time="2023-03-13T16:05:12+01:00" level=info msg="  Health: false"
 time="2023-03-13T16:05:12+01:00" level=info msg="  Readyness: false"
 time="2023-03-13T16:05:12+01:00" level=info msg="  liveness: true"
 time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------   
@@ -39,7 +37,6 @@ verbose: false  <- input
 time="2023-03-13T16:05:32+01:00" level=info msg="Disabling debug log"
 ?  <- input
 Status:
-  Health: true
   Liveness: false
   Readyness: false
   Node name: local
@@ -52,8 +49,24 @@ Status:
   Readyness: false
   Node name: local
   Pod name: default_pod_name
+```
+
+# Deploy to kubernetes
+In order for kube-learning to know its pod-name and hostname, you need to pass that information to the pod as env vars when deploying the pod.
+For more information: https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/pods/inject/dapi-envars-pod.yaml
 
 ```
+      env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+```
+
 # Example output from /
 ```
 curl http://localhost:8080/
@@ -67,13 +80,9 @@ curl http://localhost:8080/
 ```
 ? <enter> - shows the status of all probes and where the pod is running
 verbose: true | false <enter> - enables/disable verbose logging (default is off)
-health: true | false <enter> - sets state of health probe
 liveness: true | false <enter> - sets state of liveness probe
 readyness: true | false <enter> - sets state of readyness probe
 ```
 
 Ideas:
  - Show when sigterm/sigkill is received
- - [x] Command for disabling debugging (it's noisy)
- - [x] Command for printing the status of all probes
- - [x] Show current pod name and node name in "prompt" (for debugging when running multiple instances of kube-learning)

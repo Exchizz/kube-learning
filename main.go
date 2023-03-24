@@ -96,6 +96,7 @@ func stdin() {
 	log.Printf("Examples: ")
 	log.Printf("  Readyness: false")
 	log.Printf("  liveness: true")
+	log.Printf("Press \"?\" to see the current state of the probes")
 	log.Printf("-------------------------------")
 
 	for {

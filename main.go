@@ -30,11 +30,6 @@ func getLine() (string, error) {
 	return line, nil
 }
 
-func cmd_health(c cmd) {
-	prompt.Printf("cmd_health called with value: %t", c.cmd_value)
-	probes.health = c.cmd_value
-}
-
 func cmd_liveness(c cmd) {
 	prompt.Printf("cmd_liveness called with value: %t", c.cmd_value)
 	probes.liveness = c.cmd_value
@@ -58,13 +53,11 @@ func cmd_verbose(c cmd) {
 type Callback func(cmd)
 
 type Probes struct {
-	health    bool
 	liveness  bool
 	readyness bool
 }
 
 var commands = map[string]Callback{
-	"health":    cmd_health,
 	"liveness":  cmd_liveness,
 	"readyness": cmd_readyness,
 	"verbose":   cmd_verbose,
@@ -91,7 +84,6 @@ func createCmd(line string) (cmd, error) {
 
 func show_status() {
 	fmt.Printf("Status: \n")
-	fmt.Printf("  Health: %t\n", probes.health)
 	fmt.Printf("  Liveness: %t\n", probes.liveness)
 	fmt.Printf("  Readyness: %t\n", probes.readyness)
 	fmt.Printf("  Node name: %s\n", node_name)
@@ -102,7 +94,6 @@ func stdin() {
 	log.Printf("-------------------------------")
 	log.Printf("Command syntax: <cmd>:<value>")
 	log.Printf("Examples: ")
-	log.Printf("  Health: false")
 	log.Printf("  Readyness: false")
 	log.Printf("  liveness: true")
 	log.Printf("-------------------------------")
@@ -158,23 +149,14 @@ func main() {
 	})
 
 	// initialize probes
-	probes.health = true
-	probes.liveness = false
-	probes.readyness = false
+	probes.liveness = true
+	probes.readyness = true
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now().Format("01-02-2006 15:04:05")
 		fmt.Fprintf(w, "%s|%s|%s|says hello", now, node_name, pod_name)
 	})
 
-	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		if probes.health {
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprintf(w, "OK")
-		} else {
-			w.WriteHeader(http.StatusBadGateway)
-		}
-	})
 	http.HandleFunc("/livez", func(w http.ResponseWriter, r *http.Request) {
 		if probes.liveness {
 			w.WriteHeader(http.StatusOK)

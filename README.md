@@ -35,6 +35,8 @@ kubectl attach -i -t deployment/kube-learning-deployment
 ```
 If you don't see any output type ? and press enter.
 
+visit https://localhost:8080 in your browser and see the output from the pod
+
 Output from example run:
 
 ```

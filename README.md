@@ -67,7 +67,7 @@ For more information: https://raw.githubusercontent.com/kubernetes/website/main/
               fieldPath: metadata.name
 ```
 
-You can additionally choose the starting values of the liveness- and readiness probes by setting the `KUBELEARN_ALIVE` and `KUBELEARN_READY` env variables.
+You can additionally choose the starting values of the liveness- and readiness probes, as well as the debug mode, by setting the `KUBELEARN_ALIVE`, `KUBELEARN_READY` and `KUBELEARN_DEBUG` env variables.
 
 # Example output from /
 ```

@@ -163,6 +163,12 @@ func main() {
 	// initialize probes
 	probes.liveness = getEnvBool("KUBELEARN_ALIVE", true)
 	probes.readiness = getEnvBool("KUBELEARN_READY", true)
+	if getEnvBool("KUBELEARN_DEBUG", false) {
+		cmd_verbose(cmd{
+			cmd_name:  "verbose",
+			cmd_value: true,
+		})
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now().Format("01-02-2006 15:04:05")

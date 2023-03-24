@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-learning-deployment
+  labels:
+    app: kube-learning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-learning
+  template:
+    metadata:
+      labels:
+        app: kube-learning
+    spec:
+      containers:
+      - name: kube-leaninrg
+        image: ghcr.io/exchizz/kube-learning:master
+        stdin: true
+        tty: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 8080
+
+        env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+

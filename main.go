@@ -135,6 +135,17 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+// Gets the env variable as a boolean.
+// Handles "1", "t", "T", "TRUE", "true", "True" as truthy, everything else (including env variable being empty) as falsy
+// If the env variable isn't set at all, uses the given fallback
+func getEnvBool(key string, fallback bool) bool {
+	if value, ok := os.LookupEnv(key); ok {
+		parsed, err := strconv.ParseBool(value)
+		return parsed && err == nil
+	}
+	return fallback
+}
+
 var prompt *log.Entry
 var pod_name string
 var node_name string
@@ -150,8 +161,8 @@ func main() {
 	})
 
 	// initialize probes
-	probes.liveness = true
-	probes.readiness = true
+	probes.liveness = getEnvBool("KUBELEARN_ALIVE", true)
+	probes.readiness = getEnvBool("KUBELEARN_READY", true)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now().Format("01-02-2006 15:04:05")

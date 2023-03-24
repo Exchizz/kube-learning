@@ -26,7 +26,6 @@ time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------
 time="2023-03-13T16:05:12+01:00" level=info msg="Command syntax: <cmd>:<value>"   
 time="2023-03-13T16:05:12+01:00" level=info msg="Server is listening on port 8080"
 time="2023-03-13T16:05:12+01:00" level=info msg="Examples: "
-time="2023-03-13T16:05:12+01:00" level=info msg="  Health: false"
 time="2023-03-13T16:05:12+01:00" level=info msg="  Readyness: false"
 time="2023-03-13T16:05:12+01:00" level=info msg="  liveness: true"
 time="2023-03-13T16:05:12+01:00" level=info msg=-------------------------------   
@@ -39,7 +38,6 @@ verbose: false  <- input
 time="2023-03-13T16:05:32+01:00" level=info msg="Disabling debug log"
 ?  <- input
 Status:
-  Health: true
   Liveness: false
   Readyness: false
   Node name: local
@@ -67,13 +65,9 @@ curl http://localhost:8080/
 ```
 ? <enter> - shows the status of all probes and where the pod is running
 verbose: true | false <enter> - enables/disable verbose logging (default is off)
-health: true | false <enter> - sets state of health probe
 liveness: true | false <enter> - sets state of liveness probe
 readyness: true | false <enter> - sets state of readyness probe
 ```
 
 Ideas:
  - Show when sigterm/sigkill is received
- - [x] Command for disabling debugging (it's noisy)
- - [x] Command for printing the status of all probes
- - [x] Show current pod name and node name in "prompt" (for debugging when running multiple instances of kube-learning)

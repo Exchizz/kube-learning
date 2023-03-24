@@ -49,8 +49,24 @@ Status:
   Readyness: false
   Node name: local
   Pod name: default_pod_name
+```
+
+# Deploy to kubernetes
+In order for kube-learning to know its pod-name and hostname, you need to pass that information to the pod as env vars when deploying the pod.
+For more information: https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/pods/inject/dapi-envars-pod.yaml
 
 ```
+      env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+```
+
 # Example output from /
 ```
 curl http://localhost:8080/

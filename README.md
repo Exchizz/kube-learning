@@ -17,6 +17,23 @@ The tool currently supports the following probes:
 Run and test locally:
 docker run -p 8080:8080 --rm -i -t ghcr.io/exchizz/kube-learning:master
 
+Run and test in kubernetes:
+
+## Installation
+```
+kubectl apply -f https://raw.githubusercontent.com/Exchizz/kube-learning/master/manifest/deployment.yaml
+```
+
+## Test
+Create proxy from your PC to the pod running in your cluster:
+```
+kubectl port-forward deployment/kube-learning-deployment  8080:8080
+```
+In another terminal:
+```
+kubectl attach -i -t deployment/kube-learning-deployment
+```
+If you don't see any output type ? and press enter.
 
 Output from example run:
 

@@ -24,7 +24,7 @@ Run and test in kubernetes:
 kubectl apply -f https://raw.githubusercontent.com/Exchizz/kube-learning/master/manifest/deployment.yaml
 ```
 
-*NOTE* This installation does not create service for the pod nor is an ingress object created. If you want to play around with readiness-probes, you need to expose the pod via an ingress gateway (since it's the ingress gateway that will stop sending requests to the pod if you set the pod's readiness to false)
+*NOTE* This installation does not create service for the pod nor is an ingress object created. If you want to play around with readiness-probes, you need to expose the pod via an ingress gateway.
 
 ## Test
 Create proxy from your PC to the pod running in your cluster:

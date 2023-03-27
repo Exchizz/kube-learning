@@ -18,7 +18,7 @@ spec:
       - name: kube-leaninrg
         image: ghcr.io/exchizz/kube-learning:master
         stdin: true
-        tty: true
+        tty: false
         livenessProbe:
           httpGet:
             path: /healthz

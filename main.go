@@ -2,20 +2,32 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func logRequest(handler http.Handler) http.Handler {
+	logFormat := getEnv("KUBELEARN_DEBUG_FORMAT", "{{.RemoteAddr}} {{.Method}} {{.URL}}")
+	tmpl, err := template.New("kubelearn_format").Parse(logFormat)
+	if err != nil {
+		panic(err)
+	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		prompt.Debugf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		var outp bytes.Buffer
+		if err := tmpl.Execute(&outp, r); err != nil {
+			prompt.Warn(err)
+		} else {
+			prompt.Debug(outp.String())
+		}
 		handler.ServeHTTP(w, r)
 	})
 }

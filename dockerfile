@@ -14,8 +14,8 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /docker-kube-learning
+RUN go build -o /app/kube-learning
 
 EXPOSE 8080
 
-CMD [ "/docker-kube-learning" ]
+CMD [ "/app/kube-learning" ]

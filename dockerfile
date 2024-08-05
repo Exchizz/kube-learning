@@ -2,6 +2,10 @@
 
 FROM golang:1.21-alpine
 
+RUN adduser -D runas
+USER runas
+
+
 WORKDIR /app
 
 COPY go.mod ./
@@ -15,5 +19,3 @@ RUN go build -o /docker-kube-learning
 EXPOSE 8080
 
 CMD [ "/docker-kube-learning" ]
-
-
